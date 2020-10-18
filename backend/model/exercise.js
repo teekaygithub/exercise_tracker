@@ -1,9 +1,10 @@
 const mongoose = require('mongoose');
-const Schema = mongoose.schema;
+const Schema = mongoose.Schema;
 
 const exercise = new Schema({
-    name:       String,
-    duration:   Number
+    name:        String,
+    description: String,
+    duration:    Number
 });
 
 module.exports = mongoose.model("exerciseapp_exercise", exercise);
