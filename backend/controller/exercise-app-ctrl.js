@@ -1,20 +1,26 @@
 const userModel = require("../model/users.js");
 const exerciseModel = require("../model/exercise.js");
 
-// let createUser = function(name, age, done) {
-    // let newUser = new userModel({
-        // "name": name,
-        // "age": age
-    // });
+let createUser = (req, res) => {
+    console.log("request: ", req.body);
+    let newUser = new userModel({
+        "name": req.body.name,
+        "age": req.body.age
+    });
     
-    // newUser.save(function(err, data){
-        // if (err) {
-            // console.log(err);
-            // done(err);
-        // }
-        // done(null, data);
-    // });
-// }
+    if(!newUser) {
+        return res.status(400).send("Failed to create new user");
+    }
+    
+    newUser.save(function(err, data){
+        if (err) {
+            console.log(err);
+            return res.status(500).json({"server_error": err});
+        }
+        console.log("New user successfully added: ", data);
+        return res.status(200).json(data);
+    });
+}
 
 let getUsers = async (req, res) => {
     await userModel.find({}, function(err, data) {
@@ -46,7 +52,7 @@ let deleteUser = async (req, res) => {
 }
 
 module.exports = {
-    // createUser,
+    createUser,
     deleteUser,
     getUsers
 }

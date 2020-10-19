@@ -1,6 +1,7 @@
 const express = require('express');
 const exerciseRouter = require("./routes/routes");
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
 
 const app = express();
 const PORT = 5000;
@@ -10,6 +11,7 @@ mongoose.connect("mongodb+srv://fcc-tkato:0xAmusud33pfrY@cluster0.zkez3.mongodb.
             console.error("Connection error: ", e);
         });
 
+app.use(bodyParser.urlencoded({ extended: true }))
 app.use("/", exerciseRouter);
 
 // app.get("/", (req,res) => {
