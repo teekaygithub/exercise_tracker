@@ -4,8 +4,7 @@ const exerciseModel = require("../model/exercise.js");
 let createUser = (req, res) => {
     console.log("request: ", req.body);
     let newUser = new userModel({
-        "name": req.body.name,
-        "age": req.body.age
+        "name": req.body.name
     });
     
     if(!newUser) {
@@ -69,8 +68,43 @@ let createExercise = async (req, res) => {
             console.log("error: ", err);
             return res.status(500).json({"server_error": err});
         }
-        console.log("New exercise successfully logged: ", data);
+        console.log("New exercise successfully logged: ", data); //debug
         return res.status(200).json(data);
+    });
+}
+
+let getExerciseLog = async (req, res) => {
+    console.log("request: ", req.query);
+    let limit = 0;
+    if (req.query.limit) {
+        limit = parseInt(req.query.limit);
+    }
+    await exerciseModel.find({userId: req.query.userId}, null, {limit: limit}, function(err, data) {
+        if(err) {
+            console.log("server error: ", err); // debug
+            return res.status(500).json({"server_error":err});
+        }
+        if (!data) {
+            console.log("No logs found for user"); //debug
+            return res.status(400).send("No logs found for user");
+        }
+        if (req.query.limit) {}
+        console.log("Found log: ", data) // debug
+        return res.status(200).json(data);
+    });
+}
+
+let deleteExercise = async (req, res) => {
+    console.log(req.params.userId);
+    await exerciseModel.findOneAndDelete({userId: req.params.userId}, function(err, data) {
+        if (err) {
+            console.log("server error: ", err) //debug
+            return res.status(500).json({"server_error":err});
+        }
+        if (!data) {
+            return res.status(400).send("Could not find any exercises for the user ID.");
+        }
+        return res.status(200).send("Exercise deleted.");
     });
 }
 
@@ -78,5 +112,7 @@ module.exports = {
     createUser,
     deleteUser,
     getUsers,
-    createExercise
+    createExercise,
+    getExerciseLog,
+    deleteExercise
 }
