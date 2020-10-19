@@ -51,8 +51,32 @@ let deleteUser = async (req, res) => {
     }).catch(e => console.log("Exception caught: ", e));
 }
 
+let createExercise = async (req, res) => {
+    console.log(req.body); //debug
+    let newExercise = new exerciseModel({
+        "userId": req.body.userId,
+        "description": req.body.description,
+        "duration": req.body.duration,
+        "date": req.body.date
+    });
+    
+    if(!newExercise) {
+        return res.status(400).send("Failed to log exercise!");
+    }
+    
+    newExercise.save(function(err, data) {
+        if (err) {
+            console.log("error: ", err);
+            return res.status(500).json({"server_error": err});
+        }
+        console.log("New exercise successfully logged: ", data);
+        return res.status(200).json(data);
+    });
+}
+
 module.exports = {
     createUser,
     deleteUser,
-    getUsers
+    getUsers,
+    createExercise
 }
