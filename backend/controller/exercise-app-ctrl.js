@@ -74,12 +74,20 @@ let createExercise = async (req, res) => {
 }
 
 let getExerciseLog = async (req, res) => {
-    console.log("request: ", req.query);
+    console.log("request: ", req.query); // debug
     let limit = 0;
+    let findQuery = {userId: req.query.userId}
+    
     if (req.query.limit) {
         limit = parseInt(req.query.limit);
     }
-    await exerciseModel.find({userId: req.query.userId}, null, {limit: limit}, function(err, data) {
+    if (req.query.from && req.query.to) {
+        findQuery.date = {
+                $gte: new Date(req.query.from),
+                $lte:  new Date(req.query.to)
+            }
+    }
+    await exerciseModel.find(findQuery, null, {limit: limit}, function(err, data) {
         if(err) {
             console.log("server error: ", err); // debug
             return res.status(500).json({"server_error":err});
