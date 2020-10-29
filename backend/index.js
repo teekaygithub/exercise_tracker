@@ -6,7 +6,7 @@ const bodyParser = require('body-parser');
 const app = express();
 const PORT = 5000;
 
-mongoose.connect("mongodb+srv://fcc-tkato:0xAmusud33pfrY@cluster0.zkez3.mongodb.net/test?retryWrites=true&w=majority", {useNewUrlParser: true})
+mongoose.connect(process.env.MONGO_URI, {useNewUrlParser: true})
         .catch(e => {
             console.error("Connection error: ", e);
         });
